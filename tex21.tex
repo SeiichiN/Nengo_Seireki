@@ -249,6 +249,37 @@ protected void doPost(HttpServletRequest request, HttpServletResponse
 \end{enumerate}
 
 
+\subsubsection{index.jspでセッション変数を受け取る}
+
+Xnengoサーブレットから、西暦データが \textgt{''seireki''}という名前でセッ
+ションを使って送られてくるので、それを受け取るようにします。
+
+\begin{verbatim}
+    <%
+    String sekireki = session.getAttribute(``seireki'');
+    %>
+\end{verbatim}
+
+もしも null ならば、``''データにします。
+
+\begin{verbatim}
+    <%
+    if (seiseki == null) { seiseki = ``''; }
+    %>
+\end{verbatim}
+
+これを <bogy>タグ内で表示するために文字列にします。
+
+String printSeireki = ``西暦'' + seireki + ``です。``;
+
+これを <body>タグ 内で、以下のようにして表示します。
+
+\begin{verbatim}
+    <%= printSeireki %>
+\end{verbatim}
+
+
+
 
 
 
@@ -368,4 +399,4 @@ public class Xnengo extends HttpServlet {
  
 \include{end}
 
-%% 修正時刻： Sat May  9 12:45:37 2020
+%% 修正時刻： Mon May 11 12:47:15 2020
