@@ -68,6 +68,7 @@
 
 \verb!HttpSession session = request.getSession(true);!
 
+
 このように 変数session を宣言して、次のように使います。
 
 \verb!session.setAttribute("nengo", nengo);!
@@ -76,11 +77,11 @@
 
 そして、これを入力画面(index.jsp)で、以下のように取り出します。
 
-\begin{verbatim}
+\begin{lstlisting}[numbers=none]
 <%
 nengo = session.getAttribute("nengo");
 %>
-\end{verbatim}
+\end{lstlisting}
 
 そして、これを \verb!<html><body>～</body><html>! の \verb!<body>!の中で、
 \verb!<%= nengo %>! とすることで、画面に表示できます。
@@ -198,7 +199,7 @@ index.jsp は以下のようにする。
 
 そして、''doPost''メソッドを以下のようにしてください。
 
-\begin{verbatim} [caption=Xnengo.java]
+\begin{lstlisting} [caption=Xnengo.java, numbers=none]
 protected void doPost(HttpServletRequest request, HttpServletResponse
         response) throws ServletException, IOException {
 
@@ -229,7 +230,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse
     }
     response.sendRedirect("/nengo");                   // --- <6>
 }
-\end{verbatim}
+\end{lstlisting}
 
 \begin{enumerate}
  \item \textgt{セッション変数}を使ってクライアント(index.jspをダウンロー
@@ -254,38 +255,38 @@ protected void doPost(HttpServletRequest request, HttpServletResponse
 Xnengoサーブレットから、西暦データが \textgt{''seireki''}という名前でセッ
 ションを使って送られてくるので、それを受け取るようにします。
 
-\begin{verbatim}
+\begin{lstlisting}[numbers=none]
     <%
     String sekireki = session.getAttribute(``seireki'');
     %>
-\end{verbatim}
+\end{lstlisting}
 
 もしも null ならば、``''データにします。
 
-\begin{verbatim}
+\begin{lstlisting}[numbers=none]
     <%
     if (seiseki == null) { seiseki = ``''; }
     %>
-\end{verbatim}
+\end{lstlisting}
 
 これを \verb!<body>! タグ内で表示するために文字列にします。
 
-\begin{verbatim}
+\begin{lstlisting}[numbers=none]
     String printSeireki = ``西暦'' + seireki + ``です。``;
-\end{verbatim}
+\end{lstlisting}
 
 これを \verb!<body>!タグ 内で、以下のようにして表示します。
 
-\begin{verbatim}
+\begin{lstlisting}[numbers=none]
     <%= printSeireki %>
-\end{verbatim}
+\end{lstlisting}
 
 ところで、Java8からは、Optional というやり方が使えるようになりました。
 
-\begin{verbatim}
+\begin{lstlisting}[numbers=none]
     Object objNengo = Optional.ofNullable(session.getAttribute("nengo")).orElse("");
     nengo = (String) objNengo;
-\end{verbatim}
+\end{lstlisting}
 
 Optional以下のメソッドで
 
