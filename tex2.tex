@@ -1,0 +1,92 @@
+\documentclass[dvipdfmx]{jsarticle}
+
+\include{begin}
+
+\vspace{2cm}
+
+%%======================================================================
+
+\subsection{課題3}
+
+\begin{breakbox}
+ \underline{{\textsf \textgreater \, java Nengo -g 昭和 41年 }} あるいは \underline{{\textsf
+ \textgreater \, java Nengo -g 昭和 41 }}とすると、年号を西暦に変換できる
+ ようにします。『{\textsf p216}コマンドライン引数』を参照してください。
+\begin{verbatim}
+    > java Nengo -g 昭和 41
+    昭和41年は 西暦1966年 です。
+\end{verbatim}
+\end{breakbox}
+
+%%-----------------------------------------------------------------------
+\subsection{ヒント1}
+
+{\textsf Nengo.java}の {\textsf main}メソッドの引数処理の部分を修正しま
+す。
+
+\begin{itemize}
+ \item {\textsf args.length}が {\textsf 2} あるいは {\textsf 3} なら
+       {\textsf OK} とします。
+ \item 第1引数が {\textsf -n} あるいは {\textsf -g} 以外は、ユーザーに対
+       してアドバイスします。
+ \item 第1引数が {\textsf -n} の場合、第2引数のチェックと取り込みをしま
+       す。そして {\textsf toNengo}メソッドに処理を渡します。
+ \item 第1引数が {\textsf -g} の場合、第2引数と第3引数の取り込みをします。
+       チェックはしません。そして、新しく {\textsf toSeireki}メソッドを
+       作成し、それに処理を渡します。
+\end{itemize}
+
+{\textsf toSeireki}メソッドは、まだ空状態で {\textsf OK} です。
+
+%%-----------------------------------------------------------------------
+\subsection{ヒント2}
+
+次に toSeirekiメソッドを作っていきます。
+
+toSeirekiメソッドの引数は、String型の nengo と int型
+の nen とします。
+
+処理の結果は 西暦の整数です。これは、クラス変数 seireki としておきます。
+
+処理の内容は、HashMap型クラス変数の this.year の
+nengo と 引数の nengo を比べていき、同じなら、
+this.year.nen と nen を合計した数が求める西暦です。
+
+たとえば、ユーザーが「平成 2」と入力したとします。
+
+this.year の nengo と比べていき、this.year
+の {\em 平成} と一致したとき、this.year の nen は
+1988 です。
+
+1988 + 2 = 1990。つまり、西暦1990年です。
+
+ここまでをコードにすると、以下のようになります。
+
+\begin{lstlisting}
+ public void toSeireki( String nengo, int nen ) {
+     for (String key : this.year.keySet()) {
+         int value = this.year.get(key);
+         if (key.equals(nengo)) {
+             this.seireki = value + nen;
+         }
+     }
+ }
+\end{lstlisting}
+
+ただ、この for文はごちゃごちゃしてて見にくいので、次の forEach文のほうが
+すっきりしてます。
+
+\begin{lstlisting}
+ public void toSeireki( String nengo, int nen ) {
+     this.year.forEach((key, value) -> {
+         if (key.equals(nengo)) {
+             this.seireki = value + nen;
+         }
+     });
+ }
+\end{lstlisting}
+
+
+\include{end}
+
+%% 修正時刻： Tue May 12 06:14:38 2020

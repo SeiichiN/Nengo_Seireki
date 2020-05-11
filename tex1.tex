@@ -1,0 +1,332 @@
+\documentclass[dvipdfmx]{jsarticle}
+
+\include{begin}
+
+\pagenumbering{arabic}
+
+\section{プログラムの説明}
+
+ \subsection{どういうプログラムにするか}
+
+Javaを使って、西暦・和暦変換プログラムを作ります。
+
+年号は以下のものを使います。
+
+ \begin{table}[h]
+  \centering
+  \begin{tabular}{|c|c|} \hline
+   明治 & 1868 \\ \hline
+   大正 & 1912 \\ \hline
+   昭和 & 1926 \\ \hline
+   平成 & 1989 \\ \hline
+   令和 & 2019 \\ \hline
+  \end{tabular}
+ \end{table}
+
+データを扱うデータ形式ですが、将来的に江戸時代の年号も扱えるようにという
+ことで、HashMapを使うことにします。
+
+\begin{thebibliography}{}
+ \bibitem{sukkiri} Mapの使い方 『すっきりわかるJava入門 第3版』p633
+\end{thebibliography}
+
+\subsection{プログラムの作業場所}
+
+デスクトップか、あるいは適当なフォルダに {\textsf myjava}というフォルダを作っ
+て、その中を作業場所とします。
+
+そのフォルダの中に入って、{\textsf Nengo.java}というファイルを作成してください。
+
+とりあえず以下のような内容にしてください。
+
+\begin{lstlisting}
+ // Nengo.java
+
+ public class Nengo {
+
+     public static void main (String [] args) {
+
+     }
+ }
+\end{lstlisting}
+
+\newpage
+
+%%===============================================================================
+\section{課題}
+
+%%-----------------------------------------------------------------------
+\subsection{課題1}
+\begin{breakbox}
+ データの内容をすべて出力するようにしてください。順番は年号順でなくてもかまいま
+ せん。ハッシュマップは順番は気にしません。
+\begin{verbatim}
+    > java Nengo
+    明治:1867年
+    令和:2018年
+    昭和:1925年
+    平成:1988年
+    大正:1911年
+    未来:2050年
+\end{verbatim}
+\end{breakbox}
+
+%%-----------------------------------------------------------------------
+\subsection{ヒント1}
+
+{\textsf main}メソッドの処理を考えてみます。
+\begin{enumerate}
+ \item ハッシュマップ変数を用意する
+ \item その変数にデータを入れる
+ \item データを出力する
+\end{enumerate}
+
+変数を用意するのは、{\textgt p634}を参考に考えます。すると、今回の場合、
+以下のようになります。
+
+\begin{tcolorbox}
+ {\large Map \textless String, Integer \textgreater \ year = new HashMap
+ \textless \textgreater ();}
+\end{tcolorbox}
+
+{\textsf year}という変数名にしてみました。それにデータを入れます。
+
+\begin{tcolorbox}
+ {\large year.put(``明治'', 1867)}
+\end{tcolorbox}
+
+これを全てのデータについて行います。
+
+データを出力するのは、{\textsf p636}のやり方なら、
+
+\begin{tcolorbox}
+\begin{verbatim}
+     for (String key : year.keyset()) {
+       Integer value = year.get(key);
+       System.out.println( key + ``:'' + value + ``年'')
+     }
+\end{verbatim}
+\end{tcolorbox}
+
+となります。
+
+そして、データをセットする処理は、たとえば{\textsf setData}メソッドとい
+う名前で、データを出力する処理は、たとえば{\textsf printData}メソッドと
+いう名前でまとめておきます。
+
+となると、{\textsf year}変数の宣言を記述する場所を考えないといけません。
+
+これをクラス変数とすることで、このクラスの中で参照することができます。
+
+このようになると思います。
+
+%\begin{tcolorbox}
+ \begin{verbatim}
+    +------ class Nengo -------+
+    |  変数year の定義         |
+    |  setDataメソッド         |
+    |  printDataメソッド       |
+    |  mainメソッド            |
+    |    + setData();          |
+    |    + printData();        |
+    +--------------------------+    
+ \end{verbatim}
+%\end{tcolorbox}
+
+\begin{tcolorbox}
+ \begin{verbatim}
+    public class Nengo {
+        private Map<String, Integer> year;
+
+        public void setData() {
+            year = new HashMap <> ();
+            // 処理
+        }
+
+        public void printData() {
+            // 処理
+        }
+
+        public static void main (String[] args) {
+            Nengo nengo = new Nengo();
+            nengo.setData();
+            nengo.printData();
+        }
+    }
+ \end{verbatim}
+\end{tcolorbox}
+
+{\textsf year}という変数にデータをセットするのは、{\textsf main}が行って
+いますが、本来は {\textsf Nengo}というクラスから {\textsf year}というイ
+ンスタンスを生成するときに自動的に行う方がよいでしょう。\\*
+以下のようにコンストラクタを作っておきます。
+\begin{tcolorbox}
+ \begin{verbatim}
+    public class Nengo {
+        private Map<String, Integer> year;
+
+        // コンストラクタ
+        public Nengo () {
+            this.setData();
+        }
+        // ... 略 ...
+ \end{verbatim}
+\end{tcolorbox}
+
+
+
+
+\vspace{2cm}
+
+%%======================================================================
+
+\subsection{課題2}
+
+\begin{breakbox}
+ {\textsf \textless java Nengo -n 2003 }とすると、西暦を年号に変換できる
+ ようにします。『{\textsf p216}コマンドライン引数』を参照してください。
+\begin{verbatim}
+    > java Nengo -n 2003
+    西暦2003年は 平成15年 です。
+\end{verbatim}
+\end{breakbox}
+
+%%----------------------------------------------------------
+
+\subsection{ヒント1}
+
+まず、コマンドライン引数を画面に表示することを考えます。
+
+\begin{verbatim}
+    > java Nengo -n 2003 
+\end{verbatim}
+の場合、{\textsf args[0]}に「-n」 が、{\textsf args[1]}に「2003」が入ります。
+
+また、引数の指定が間違っているとき、正しいやり方を表示して、ユーザーに助
+言するようにします。
+
+\begin{tcolorbox}
+\begin{verbatim}
+    > java Nengo 2003
+    このように入力してください。
+    java Nengo -n 2003
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{tcolorbox}
+\begin{verbatim}
+    > java Nengo -n 2003
+    args[0]: -n
+    args[1]: 2003
+\end{verbatim}
+\end{tcolorbox}
+
+このようなコードになるでしょう。
+
+\begin{tcolorbox}
+\begin{verbatim}
+    if (args == 2) {
+        // argsの内容を出力
+    } else {
+        // ユーザーに助言
+    }        
+\end{verbatim}
+\end{tcolorbox}
+
+%%-------------------------------------------------------------
+
+\subsection{ヒント2}
+
+次に、西暦を与えると、和暦を返す関数を考えます。
+
+\begin{verbatim}
+    明治:1867年
+    大正:1911年
+    昭和:1925年
+    平成:1988年
+    令和:2018年
+    未来:2050年
+\end{verbatim}
+
+2003年を例に考えると、
+
+\begin{verbatim}
+    2003 - 1867 = 明治136年
+    2003 - 1911 = 大正92年
+    2003 - 1925 = 昭和78年
+    2003 - 1988 = 平成15年
+    2003 - 2018 = 令和-15年
+\end{verbatim}
+となります。
+
+% もし、1988年だと、1988 - 1988 = 平成0年 となりますから、
+% 引き算をやって 1以上だといいわけです。
+
+
+順に引き算をやっていって、一番小さな値のときが、その西暦のときの年号だと
+いうことになります。
+
+もし、与えた引数が1988年だと、1988 - 1988 = 平成0年 となりますから、
+その年号は使えません。引き算をやって 1以上だといいわけです。
+
+実際にコードで記述してみます。
+
+{\textsf p636}のやり方でやってみます。
+
+\begin{verbatim}
+    Map <String, Integer> year = new HashMap <> ();
+\end{verbatim}
+
+という変数yearを用意しているとして、
+
+ユーザーが入力した西暦を seireki という int型の変数にセットしているとし
+て、
+
+\begin{tcolorbox}
+\begin{verbatim}
+    String nengo = "";  // 求める年号をこれにセットする
+    int nen = 0;        // 求める年をこれにセットする    
+    int sa = 0;       // 西暦とその年号0年時の西暦年との差
+    for (String key : year.keyset()) {
+        Integer value : year.get(key);
+        sa = seireki - value;
+        if (sa > 0) {
+            nengo = key;
+            nen = sa;
+        }   
+    }
+\end{verbatim}
+\end{tcolorbox}
+
+ただ、もとのデータ{\textsf year}が年が昇順に並んでいないので、{\textsf
+nen}に最小のデータがセットされるとは限りません。
+
+{\textsf nen}に最小のデータがセットされるように工夫する必要があります。
+
+\begin{tcolorbox}
+\begin{verbatim}
+    String nengo = "";  // 求める年号をこれにセットする
+    int nen = 10000;        // 求める年をこれにセットする    
+    int sa = 0;       // 西暦とその年号0年時の西暦年との差
+    for (String key : year.keyset()) {
+        Integer value : year.get(key);
+        sa = seireki - value;
+        if (sa > 0 && sa < nen) {
+            nengo = key;
+            nen = sa;
+        }   
+    }
+\end{verbatim}
+\end{tcolorbox}
+
+まず、{\textsf nen}の初期値を大きな値にしておきます。
+
+そして、{\textsf sa}が 0 よりも大きくて、かつ、{\textsf nen}よりも小さけ
+れば {\textsf nen}にセットすることにすればいいことになります。
+
+
+
+
+\include{end}
+
+%% 修正時刻： Tue May 12 06:19:07 2020

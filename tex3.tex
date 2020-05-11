@@ -1,0 +1,119 @@
+
+\documentclass[dvipdfmx]{jsarticle}
+
+\include{begin}
+
+\vspace{2cm}
+
+%%======================================================================
+
+\subsection{課題4}
+
+\fboxrule=1pt
+\begin{breakbox}
+Nengo.java をパッケージ化します。
+パッケージ名は ''com.example.nengo'' とします。\\*
+現在は ''myjava'' フォルダにいます。ここで、''source''フォルダ
+と''classes''フォルダを作成します。\\*
+\hspace{1cm} \verb*!> mkdir source classes! \\*
+さらに、''source''フォルダの中に
+ ''com\yen example\yen nengo'' フォルダを作成します。\\*
+\hspace{1cm} \verb*!> mkdir -p com/example/nengo! \\*
+ ''com\yen example\yen nengo'' フォルダの中に ''Nengo.java''を移動します。
+
+\begin{tcolorbox}
+\begin{verbatim}
+  ./myjava
+    ├── classes
+    └── source
+        └── com
+            └── example
+                └── nengo
+                    ├── Nengo.java
+                    └── Xnengo.java
+\end{verbatim}
+\end{tcolorbox}
+ 
+ そして、''Nengo.java''とは別に ''Xnengo.java'' を作成し、その中に
+ ''Nengo.java'' の中の ''main''メソッドを移動します。
+
+\begin{tcolorbox}
+\begin{verbatim}
+    // Xnengo.java
+    public class Xnengo {
+        public static void main (String[] args) {
+          ....      ...
+          .... 処理 ...
+          ....      ...
+        }
+    }
+\end{verbatim}
+\end{tcolorbox}
+
+コンパイルは、''source''フォルダにておこないます。\\*
+\hspace{1cm} \verb*!> javac -d ../classes com/example/nengo/*.java! \\*
+おそらくエラーが出力されることと思います。
+
+
+\begin{tcolorbox}
+\begin{verbatim}
+Xnengo.java:43: エラー: nengoはNengoでprivateアクセスされます
+                    + objNengo.nengo + objNengo.nen + "年です。");
+                              ^                ^
+Xnengo.java:43: エラー: nenはNengoでprivateアクセスされます
+                    + objNengo.nengo + objNengo.nen + "年です。");
+                              ^                ^
+Xnengo.java:49: エラー: seirekiはNengoでprivateアクセスされます
+  System.out.println( nengo + nen                            
+                    + "年は " + objNengo.seireki + "年です。");
+                                        ^
+\end{verbatim}
+\end{tcolorbox}
+
+
+ 行はコードの書き方によってさまざまですが、\underline{nengoはNengoで
+ privateアクセスされます} というエラーが出力されるはずです。
+ このエラーに対処してください。
+\end{breakbox}
+
+
+
+%%----------------------------------------------------------
+
+\subsection{ヒント1}
+
+もしかすると、上にあるようなエラーが出力されないかもしれません。その場合、
+以降の内容をみて、以下の対策がされているのかもしれません。
+
+上記のエラーは、''Nengo.java'' の中の以下の部分に関係しています。
+
+\begin{tcolorbox}
+\begin{verbatim}
+        ...
+public class Nengo {
+    private HashMap<String, Integer> year;
+
+    private String nengo = "";        --- <1>
+    private int nen = 10000;          --- <2>
+    private int seireki = 0;          --- <3>
+        ...
+\end{verbatim}
+\end{tcolorbox}
+
+\verb!<1> <2> <3>! は {\textsf private}宣言されてます
+(『スッキリわかるJava入門 第3版』p499)。
+ですから、
+''Nengo''クラス内部から呼び出す(アクセスする)
+ぶんには問題ないのですが、今回のように ''main''メソッドを別クラスにして、
+別クラスからこのNengoクラスにアクセスすると、今回のようなエラーが出ます。
+
+
+対処のしかたは、『同書』p503 以降に書かれているように、''getter'' や ''
+setter'' を追加します。
+
+''main''メソッドからアクセスする場合は、''getter''メソッドを使えばいいと
+いうことになります。
+
+\include{end}
+
+%% 修正時刻： Tue May 12 06:15:05 2020

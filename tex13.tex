@@ -1,0 +1,51 @@
+\documentclass[dvipdfmx]{jsarticle}
+
+\include{begin}
+
+\subsection{課題4 - 解答例}
+
+\begin{lstlisting}[caption=com/example/nengo/Nengo.java]
+  ...
+ public class Nengo {
+    private HashMap<String, Integer> year;
+
+    private String nengo = "";
+    private int nen = 10000;
+    private int seireki = 0;
+
+    public Nengo () {
+        this.setData();
+    }
+    
+    // getter
+    public String getNengo () { return this.nengo; }
+    public int getNen () { return this.nen; }
+    public int getSeireki () { return this.seireki; }
+
+    // setter -- 今回は使わない 
+    public void setNengo (String newNengo) { this.nengo = newNengo; }
+    public void setNen (int newNen) { this.nen = newNen; }
+    public void setSeireki (int newSeireki) { this.seireki = newSeireki; }
+   ...
+\end{lstlisting}
+
+以上のように ''getter'' を作ります。''setter'' も作っておいてもいいです。
+今のところ使っていませんが。
+
+Xnengo.java も Nengoインスタンスの nengo、nen、seireki にアクセスしてい
+るところを、上で作ったゲッターを使います。
+
+ \begin{lstlisting} [caption=com/example/nengo/Xnengo.java]
+  ...
+ System.out.println("西暦" + seireki + "年は "
+     + objNengo.getNengo() + objNengo.getNen() + "年です。");
+  ...
+  System.out.println( nengo + nen + "年は " + objNengo.getSeireki() + "
+  年です。");
+  ...
+ \end{lstlisting}
+
+ 
+\include{end}
+
+%% 修正時刻： Tue May 12 05:48:30 2020

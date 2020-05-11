@@ -1,0 +1,133 @@
+\documentclass[dvipdfmx]{jsarticle}
+
+\include{begin}
+
+\section{解答例}
+
+\subsection{課題1 - 解答例}
+
+\begin{lstlisting}
+ // Nengo.java
+
+ import java.util.HashMap;
+
+ public class Nengo {
+     private HashMap<String, Integer> year;
+
+     public Nengo () {
+         this.setData();
+     }
+ 
+     public void setData() {
+         this.year = new HashMap<>();
+         this.year.put("明治", 1866);
+         this.year.put("大正", 1911);
+         this.year.put("昭和", 1925);
+         this.year.put("平成", 1988);
+         this.year.put("令和", 2018);
+         this.year.put("未来", 2050);
+     }
+  
+     public void printData() {
+         for ( String key : year.keySet() ) {
+             int value = year.get(key);
+             System.out.println( key + ":" + value + "年");
+         }
+     }
+  
+     public static void main (String [] args) {
+         Nengo objNengo = new Nengo();
+         objNengo.printData();
+     }
+ }
+\end{lstlisting}
+
+
+
+\newpage
+
+\subsection{課題2 - 解答例}
+
+\begin{lstlisting}
+ // Nengo.java
+
+ import java.util.HashMap;
+ 
+ public class Nengo {
+     private HashMap<String, Integer> year;
+ 
+     private String nengo = "";
+     private int nen = 10000;
+
+     public Nengo () {
+         this.setData();
+     }
+ 
+     public void setData() {
+         this.year = new HashMap<>();
+         this.year.put("明治", 1866);
+         this.year.put("大正", 1911);
+         this.year.put("昭和", 1925);
+         this.year.put("平成", 1988);
+         this.year.put("令和", 2018);
+         this.year.put("未来", 2050);
+     }
+ 
+     public void printData() {
+         for ( String key : this.year.keySet() ) {
+             int value = this.year.get(key);
+             System.out.println( key + ":" + value + "年");
+         }
+     }
+ 
+     public void toNengo(int seireki) {
+         for ( String key : this.year.keySet() ) {
+             int value = this.year.get(key);
+             int sa = seireki - value;
+             if (sa > 0 && sa < this.nen){
+                 this.nen = sa;
+                 this.nengo = key;
+             }
+         }
+     }
+ 
+     public static void main (String[] args) {
+         int seireki = 0;
+         Nengo objNengo = new Nengo();
+         // nengo.printData();
+         if (args.length == 2) {
+             // System.out.println("args[0]: " + args[0]);
+             // System.out.println("args[1]: " + args[1]);
+             ;
+         } else {
+             System.out.println("このように入力してください。");
+             System.out.println("> java Nengo -n 2003");
+             System.exit(1);
+         }
+         if ((args[0]).equals("-n")) {
+             ;
+         } else {
+             System.out.println("第1引数は -n です。");
+             System.exit(1);
+         }
+         seireki = Integer.parseInt(args[1]);
+         if (seireki < 1867) {
+             System.out.println("入力できる西暦は1868年以上です。");
+             System.exit(1);
+         }
+         if (seireki > 2050) {
+             System.out.println("入力できる西暦は2050年未満です。");
+             System.exit(1);
+         }
+  
+         objNengo.toNengo(seireki);
+         System.out.println("西暦" + seireki + "年は "
+                            + objNengo.nengo + objNengo.nen + "年です。");
+     }
+ }
+\end{lstlisting}
+
+
+\include{end}
+
+%% 修正時刻： Tue May 12 05:47:52 2020
