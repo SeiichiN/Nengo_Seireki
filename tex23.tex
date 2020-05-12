@@ -115,6 +115,22 @@ index.jsp は以下のようにする。
 また、''doPost''メソッドの中の ''doGet(request, response)'' は、削除して
 おいてください。
 
+まず、インスタンス変数として nengo と nen を用意します。
+ERROR という定数も用意しておきます。
+
+\begin{lstlisting}[caption=Xnengo.java, numbers=none]
+   ...(省略)...
+ @WebServlet(``Xnengo'')
+ public class Xnengo extends HttpServlet {
+     private static final long serialVersionUID = 1L;
+
+     private String nengo = ``'';
+     private String nen = ``'';
+     private final String ERROR = ``正しく入力されませんでした'';
+ 
+   ...(省略)...
+\end{lstlisting}
+
 そして、''doPost''メソッドを以下のようにしてください。
 
 \begin{lstlisting} [caption=Xnengo.java, numbers=none]
@@ -167,6 +183,114 @@ protected void doPost(HttpServletRequest request, HttpServletResponse
        指示します。       
 \end{enumerate}
 
+\subsubsection{Nengo.javaを使う}
+
+課題4で作成した Nengo.java を配置します。
+
+課題4のフォルダを開いて(Windowsのエクスプローラを使う) Nengo.java をコピー
+します。
+
+Eclipse の プロジェクト・エクスプローラで、''com.example.nengo'' を右ク
+リックして貼り付けます。
+
+すると、Nengo.java が挿入されます。
+
+\includegraphics[width=8cm]{paste_Nengo_java.png}
+
+次に、toNengo メソッドを作ります。以下のようになります。
+
+ \begin{lstlisting}[caption=Xnengo.java, numbers=none]
+  // 引数
+  //   txtSeireki -- 西暦の数字を文字列で受け取る
+  //
+  private void toNengo(String txtSeireki) {
+     int s = Integer.parseInt(txtSeireki);
+     // インスタンスを作成
+     Nengo n = new Nengo();       
+     // インスタンスの toNengo メソッドを実行
+     // インスタンスの中に年号に変換したデータが保存される
+     n.toNengo(s);                
+     // getterでデータを取り出す
+     this.nengo = n.getNengo();
+     this.nen = String.valueOf(n.getNen());
+ }
+ \end{lstlisting}
+
+ ここで Xnengo.java のコードを掲げます。
+
+ \begin{lstlisting}[caption=Xnengo.java]
+package com.example.nengo;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+/**
+ * Servlet implementation class Xnengo
+ */
+@WebServlet("/Xnengo")
+public class Xnengo extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	
+	private String nengo = "";
+	private String nen = "";
+	private final String ERROR = "正しく入力されませんでした";
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public Xnengo() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		
+	    request.setCharacterEncoding("UTF-8");
+
+	    // index.jspにデータを送り返すのに、セッションという
+	    // しくみを使います。
+	    HttpSession session = request.getSession(true);
+
+	    // index.jspから送られてきたデータ(seireki)を
+	    // 受け取って、txtSeirekiという文字列にセット。
+	    String txtSeireki = request.getParameter("seireki");
+
+	    if (txtSeireki != null && txtSeireki != "") {
+	        this.toNengo(txtSeireki);
+	        session.setAttribute("nengo", this.nengo);
+	        session.setAttribute("nen", this.nen);
+	        session.setAttribute("error", null);
+	        session.setAttribute("seireki", null);
+	    }
+	    else {
+	        session.setAttribute("nengo", null);
+	        session.setAttribute("nen", null);
+	        session.setAttribute("seireki", null);
+	        session.setAttribute("error", this.ERROR);
+	    }
+	    response.sendRedirect("/nengo");
+	}
+	
+    private void toNengo(String txtSeireki) {
+        int s = Integer.parseInt(txtSeireki);
+        Nengo n = new Nengo();
+        n.toNengo(s);
+        this.nengo = n.getNengo();
+        this.nen = String.valueOf(n.getNen());
+    }
+}
+ \end{lstlisting}
+ 
 
 \subsubsection{index.jspでセッション変数を受け取る}
 
@@ -314,4 +438,4 @@ if (seireki != "") {
 
 \include{end}
 
-%% 修正時刻： Tue May 12 06:51:28 2020
+%% 修正時刻： Tue May 12 09:38:51 2020
