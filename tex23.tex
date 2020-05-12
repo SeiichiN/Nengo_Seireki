@@ -65,12 +65,12 @@ index.jsp は以下のようにする。
             <p>年号と年を入力してください</p>
             <p><select name="nengo" id="nengo">
               <option value="" selected>選択してください</option>
-              <option value="meiji">明治</option>
-              <option value="taisyo">大正</option>
-              <option value="syouwa">昭和</option>
-              <option value="heisei">平成</option>
-              <option value="reiwa">令和</option>
-              <option value="mirai">未来</option>
+              <option value="明治">明治</option>
+              <option value="大正">大正</option>
+              <option value="昭和">昭和</option>
+              <option value="平成">平成</option>
+              <option value="令和">令和</option>
+              <option value="未来">未来</option>
             </select>
             &nbsp;&nbsp;
             <input type="text" name="nen" id="nen"/>年
@@ -318,7 +318,6 @@ public class Xseireki extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
     private String seireki = "";
-    private String nengo = "";
     private final String ERROR = "正しく入力されませんでした";
 
     public Xseireki() {
@@ -395,15 +394,15 @@ Xnengoサーブレットから、年号データが \textgt{''nengo''}という�
 これを \verb!<body>! タグ内で表示するために文字列にします。
 
 \begin{lstlisting}[numbers=none]
-    String printNengo = nengo + `` '' + nen + ``です。``;
-    String printSeireki = ``西暦'' + seireki + ``です。``;
+    String ansNengo = nengo + `` '' + nen + ``です。``;
+    String ansSeireki = ``西暦'' + seireki + ``です。``;
 \end{lstlisting}
 
 これを \verb!<body>!タグ 内で、以下のようにして表示します。
 
  \begin{lstlisting}[numbers=none]
-  <%= printNengo %>
-  <%= printSeireki %>
+  <%= ansNengo %>
+  <%= ansSeireki %>
  \end{lstlisting}
 
 ところで、Java8からは、Optional というやり方が使えるようになりました。
@@ -520,9 +519,45 @@ if (seireki != "") {
 </html>
 \end{lstlisting}
 
+\subsubsection{スタイルシート}
 
+最後にスタイルシートを配置します。
+
+''プロジェクト・エクスプローラの ''nengo'' -- ''WebContent'' の中に
+''css''フォルダを作成します。
+
+その ''css''フォルダを右クリックして、''新規'' -- ''ファイル'' として
+''nengo.css'' を作成します。
+
+その内容は、以下です。
+
+\begin{lstlisting}[caption=nengo.css]
+@charset "utf-8";
+/* nengo.css */
+
+body {
+  background-color: #ffee00;
+}
+
+#wrap {
+  background-color: #fff;
+  width: 800px;
+  margin: 0 auto;
+  height: 100vh;
+  padding: 10px;
+}
+
+section {
+	height: 160px;
+}
+
+#kaito-nengo,
+#kaigo-seireki {
+	line-height: 24px;
+}
+\end{lstlisting}
 
 
 \include{end}
 
-%% 修正時刻： Tue May 12 12:15:57 2020
+%% 修正時刻： Wed May 13 08:35:41 2020
