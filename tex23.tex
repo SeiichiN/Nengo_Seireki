@@ -292,45 +292,132 @@ public class Xnengo extends HttpServlet {
  \end{lstlisting}
  
 
+ \subsubsection{Xseirekiサーブレットもつくる}
+
+ index.jspで年号と年を入力して送信したら、西暦を受け取れるようにします。
+
+ Xseirekiサーブレットで年号と年を受け取り、西暦に変換して送り返します。
+
+ \begin{lstlisting}[caption=Xseireki.java]
+  package com.example.nengo;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+/**
+ * Servlet implementation class Xseireki
+ */
+@WebServlet("/Xseireki")
+public class Xseireki extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+    private String seireki = "";
+    private String nengo = "";
+    private final String ERROR = "正しく入力されませんでした";
+
+    public Xseireki() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+        request.setCharacterEncoding("UTF-8");
+
+        HttpSession session = request.getSession(true);
+
+        String nengo = request.getParameter("nengo");
+        String txtNen = request.getParameter("nen");
+
+        if (nengo != null && txtNen != null && nengo != "" && txtNen != "") {
+            this.toSeireki(nengo, txtNen);
+            session.setAttribute("seireki", this.seireki);
+            session.setAttribute("nengo", null);
+            session.setAttribute("nen", null);
+            session.setAttribute("error", null);
+        }
+        else {
+            session.setAttribute("nengo", null);
+            session.setAttribute("nen", null);
+            session.setAttribute("seireki", null);
+            session.setAttribute("error", this.ERROR);
+        }
+        response.sendRedirect("/nengo");
+    }
+
+    private void toSeireki (String nengo, String txtNen) {
+        int nen = Integer.parseInt(txtNen);
+        Nengo n = new Nengo();
+        n.toSeireki(nengo, nen);
+        this.seireki = String.valueOf(n.getSeireki());
+    }
+}
+
+ \end{lstlisting}
+ 
 \subsubsection{index.jspでセッション変数を受け取る}
 
-Xnengoサーブレットから、西暦データが \textgt{''seireki''}という名前でセッ
-ションを使って送られてくるので、それを受け取るようにします。
+Xnengoサーブレットから、年号データが \textgt{''nengo''}という名前で、年
+データが \textgt{''nen''}という名前でセッションを使って送られてくるので、
+それを受け取るようにします。
+
+同様に、Xseirekiサーブレットからは、西暦データが \textgt{''seireki''}が
+送られてきます。
 
 \begin{lstlisting}[numbers=none]
-    <%
-    String sekireki = session.getAttribute(``seireki'');
-    %>
+ <%
+ String nengo = session.getAttribute(``nengo'');
+ String nen = session.getAttribute(``nen'');
+ String sekireki = session.getAttribute(``seireki'');
+ %>
 \end{lstlisting}
 
 もしも null ならば、``''データにします。
 
 \begin{lstlisting}[numbers=none]
-    <%
-    if (seiseki == null) { seiseki = ``''; }
-    %>
+ <%
+ if (nengo == null) { nengo = ``''; }
+ if (nen == null) { nen = ``''};
+ if (seiseki == null) { seiseki = ``''; }
+ %>
 \end{lstlisting}
 
 これを \verb!<body>! タグ内で表示するために文字列にします。
 
 \begin{lstlisting}[numbers=none]
+    String printNengo = nengo + `` '' + nen + ``です。``;
     String printSeireki = ``西暦'' + seireki + ``です。``;
 \end{lstlisting}
 
 これを \verb!<body>!タグ 内で、以下のようにして表示します。
 
-\begin{lstlisting}[numbers=none]
-    <%= printSeireki %>
-\end{lstlisting}
+ \begin{lstlisting}[numbers=none]
+  <%= printNengo %>
+  <%= printSeireki %>
+ \end{lstlisting}
 
 ところで、Java8からは、Optional というやり方が使えるようになりました。
+
+例えば、nengo を受け取る処理は、
 
 \begin{lstlisting}[numbers=none]
     Object objNengo = Optional.ofNullable(session.getAttribute("nengo")).orElse("");
     nengo = (String) objNengo;
 \end{lstlisting}
 
-Optional以下のメソッドで
+と書けます。
+
+Optional以下のメソッドに、ofNullable() と orElse() があります。
 
 \begin{tcolorbox}
 ofNullbable() -- ()内の変数ないしメソッドが null を含むことを想定している。
@@ -438,4 +525,4 @@ if (seireki != "") {
 
 \include{end}
 
-%% 修正時刻： Tue May 12 09:38:51 2020
+%% 修正時刻： Tue May 12 12:15:57 2020
